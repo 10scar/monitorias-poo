@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ecos en la Niebla · Presentación del proyecto</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Cpath d='M32 10 42 32 32 54 22 32Z' fill='%23ffcf7a'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23fff3d1'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="deck/deck.css" />
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+    <main class="deck" aria-label="Presentación del proyecto Ecos en la Niebla">
+      <!-- 01 · Portada -->
+      <section class="slide cover is-active">
+        <div class="cover__grid">
+          <div class="cover__copy">
+            <p class="kicker">Proyecto 1 · Programación Orientada a Objetos</p>
+            <h1 aria-label="Ecos en la Niebla">Ecos en<br /><span class="grad">la Niebla</span></h1>
+            <p class="lead">
+              Juego de exploración sobre una cuadrícula desarrollado con p5.js y
+              p5.quadrille.js. Implementa las mecánicas Walk y Reveal, y emplea
+              el contrato de presentación de Shine para la interfaz visual.
+            </p>
+            <div class="chips">
+              <span class="chip chip--amber">Walk</span>
+              <span class="chip chip--cyan">Reveal</span>
+              <span class="chip chip--violet">Shine · apoyo visual</span>
+            </div>
+            <p class="cover__meta">
+              Monitoría: Oscar Gutiérrez · 2026 · p5.js 2.3.4 ·
+              p5.quadrille.js 3.5.0
+            </p>
+          </div>
+          <div class="cover__art">
+            <img
+              src="../assets/captura-canvas.png"
+              alt="Laberinto iluminado por una linterna, con niebla y un eco recogido."
+            />
+            <p class="cover__caption">Semilla #4176 · 18 pasos · 1/3 ecos</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 · Descripción general -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Descripción general</p>
+            <h2>Exploración, memoria y rutas sobre una cuadrícula.</h2>
+            <p class="lead">
+              El jugador controla a un explorador dentro de un laberinto generado
+              con <code class="mono">maze()</code>. La linterna revela el entorno
+              de forma progresiva y el desplazamiento solo se permite por celdas
+              que ya han sido exploradas. El objetivo consiste en recoger tres
+              ecos y llegar al Umbral.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="stack">
+                <div class="stat-grid">
+                  <div class="stat">
+                    <strong>17 × 13</strong>
+                    <span>celdas de laberinto</span>
+                  </div>
+                  <div class="stat">
+                    <strong>3</strong>
+                    <span>ecos por recoger</span>
+                  </div>
+                  <div class="stat">
+                    <strong>2</strong>
+                    <span>mecánicas integradas</span>
+                  </div>
+                </div>
+                <div class="card card--amber">
+                  <h3>El acceso a la información condiciona el avance.</h3>
+                  <p>
+                    A diferencia de un juego de acción, el progreso depende de la
+                    información que el jugador ha obtenido. La niebla oculta el
+                    estado del laberinto, mientras que la memoria de las celdas
+                    ya visitadas permite planificar el regreso y elegir la
+                    siguiente ruta.
+                  </p>
+                </div>
+              </div>
+              <div class="shot">
+                <img
+                  src="../assets/captura-inicio.png"
+                  alt="Estado inicial: el explorador en el centro y la linterna abriendo la niebla."
+                />
+                <div class="shot__caption">Semilla #7575 · estado inicial</div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ecos en la Niebla</strong> · Proyecto 1</span>
+            <span>Walk + Reveal</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 03 · Reglas -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Reglas</p>
+            <h2>Condiciones de juego y de victoria.</h2>
+            <p class="lead">
+              La interacción se reduce a seleccionar celdas y recorrer rutas. Las
+              reglas distinguen entre celdas de piso, celdas exploradas y celdas
+              alcanzables.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <ol class="list-plain">
+                <li>
+                  El jugador selecciona una celda de piso que ya haya sido
+                  <strong>explorada</strong>.
+                </li>
+                <li>
+                  El juego calcula una ruta mediante
+                  <code class="mono">path()</code> sobre la máscara de celdas
+                  conocidas, y el explorador la recorre paso a paso. Si se
+                  selecciona otra celda durante el recorrido, la ruta se
+                  recalcula desde la última celda alcanzada.
+                </li>
+                <li>
+                  Cada paso actualiza la niebla y, cuando corresponde, recoge un
+                  eco.
+                </li>
+                <li>
+                  Al reunir los tres ecos, el <strong>Umbral</strong> se abre y
+                  puede cruzarse para finalizar la partida.
+                </li>
+                <li>
+                  La tecla <span class="badge">R</span> o el botón del panel
+                  generan un laberinto nuevo con otra semilla.
+                </li>
+              </ol>
+              <div class="shot">
+                <img
+                  src="../assets/captura-exploracion.png"
+                  alt="Captura con un eco recogido, el rastro del camino y el Umbral visible en la memoria."
+                />
+                <div class="shot__caption">
+                  Semilla #4176 · 18 pasos · 1/3 ecos
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Criterio de validación</strong> · solo las celdas exploradas son transitables</span>
+            <span>No existe condición de derrota</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 04 · Demostración -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Demostración</p>
+            <h2>Ejecución del juego.</h2>
+            <p class="lead">
+              La demostración utiliza la semilla <span class="mono">#4176</span>,
+              por lo que reproduce el mismo laberinto y la misma distribución de
+              ecos. El juego se abre en una pestaña independiente.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="shot">
+                <a href="../index.html?seed=4176" target="_blank" rel="noopener">
+                  <img
+                    src="../assets/captura-exploracion.png"
+                    alt="Captura del juego con la linterna, el rastro y un eco recogido."
+                  />
+                </a>
+                <div class="shot__caption">
+                  Semilla #4176 · 18 pasos · 1/3 ecos
+                </div>
+              </div>
+
+              <div class="stack">
+                <div class="card card--amber">
+                  <h3>Aspectos para observar</h3>
+                  <p>
+                    Al seleccionar una celda iluminada, la ruta se calcula
+                    únicamente sobre el área explorada. La niebla se actualiza en
+                    cada paso y conserva la información de las celdas visitadas.
+                    En el panel lateral se reflejan el contador de ecos y el
+                    estado de la partida. Si se intenta cruzar el Umbral sin los
+                    tres ecos, el juego lo impide y muestra un aviso.
+                  </p>
+                </div>
+                <a class="button" href="../index.html?seed=4176" target="_blank" rel="noopener">
+                  Abrir el juego ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Demostración</strong> · semilla #4176</span>
+            <span>Clic para desplazarse · R para reiniciar</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 05 · Walk -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Mecánica 1</p>
+            <h2>Walk: planificación y ejecución de rutas.</h2>
+            <p class="lead">
+              La mecánica no calcula el movimiento a partir de las teclas.
+              Solicita al tablero una ruta y consume la respuesta paso a paso, lo
+              que separa la validación del desplazamiento.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card">
+                <div class="code-card__bar">js/mechanics/Walk.js</div>
+                <pre><code class="js">planTo(target) {
+  if (target.equals(this.explorer.cell)) {
+    return { ok: false, reason: 'same' };
+  }
+
+  const steps = this.dungeon.path(this.explorer.cell, target);
+  if (steps.length === 0) {
+    return { ok: false, reason: 'unreachable' };
+  }
+
+  this.plan = steps;
+  this.progress = 0;
+  this.moving = true;
+  return { ok: true, steps: steps.length };
+}</code></pre>
+              </div>
+
+              <div class="stack">
+                <div class="card card--amber">
+                  <h3>La ruta se obtiene del tablero.</h3>
+                  <p>
+                    <code class="mono">dungeon.path()</code> consulta la máscara
+                    <code class="mono">known</code>. Si el destino es un muro,
+                    una celda no explorada o la misma celda actual, devuelve una
+                    lista vacía. Walk solo inicia el desplazamiento cuando la
+                    respuesta contiene al menos un paso.
+                  </p>
+                </div>
+                <p class="small">
+                  La planificación y la animación son responsabilidades
+                  distintas. Un clic durante el recorrido reemplaza el plan desde
+                  la última celda alcanzada. <code class="mono">deltaTime</code>
+                  regula la velocidad y <code class="mono">lerp</code> interpola
+                  la posición visual, mientras que la posición lógica y la de
+                  dibujo se mantienen separadas.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Fuente conceptual</strong> · capítulo Walk, Grid-Based Game Programming</span>
+            <span>path() · reach() · deltaTime</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 06 · Reveal -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--cyan">Mecánica 2</p>
+            <h2>Reveal: visibilidad, memoria y restricciones de paso.</h2>
+            <p class="lead">
+              La niebla no es solo un efecto de dibujo. Al revelar una celda de
+              piso, la mecánica la habilita en la máscara que utiliza Walk, de
+              modo que la visibilidad determina el conjunto de rutas posibles.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card">
+                <div class="code-card__bar">js/mechanics/Reveal.js</div>
+                <pre><code class="js">const distance = Math.hypot(
+  row - center.row,
+  col - center.col
+);
+if (distance &gt; radius) continue;
+
+const cell = new Cell(row, col);
+this.explored[row][col] = true;
+this.lit[row][col] = true;
+this.dungeon.unlock(cell); // habilita el piso para Walk
+
+const edge = this._smoothstep(fadeStart, radius, distance);
+this.targetAlpha[row][col] = memoryAlpha * edge;</code></pre>
+              </div>
+
+              <div class="stack">
+                <div class="grid-3">
+                  <div class="card card--amber">
+                    <h4>Luz actual</h4>
+                    <p>Radio de la linterna en la posición actual.</p>
+                  </div>
+                  <div class="card">
+                    <h4>Memoria</h4>
+                    <p>Celdas ya vistas; siguen siendo transitables.</p>
+                  </div>
+                  <div class="card card--violet">
+                    <h4>Niebla</h4>
+                    <p>Celdas no exploradas; no son transitables.</p>
+                  </div>
+                </div>
+                <p class="small">
+                  <code class="mono">explored[][]</code> registra la memoria de la
+                  linterna, <code class="mono">lit[][]</code> el radio actual y
+                  <code class="mono">alpha[][]</code> la opacidad que se interpola
+                  para suavizar el borde. La llamada
+                  <code class="mono">dungeon.unlock(cell)</code> incorpora la
+                  celda a la máscara de paso que utiliza Walk.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Adaptación</strong> · Reveal sin minas, orientado a la exploración</span>
+            <span>explored · lit · alpha</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 07 · Shine -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--violet">Presentación visual</p>
+            <h2>Shine como apoyo de presentación.</h2>
+            <p class="lead">
+              Las mecánicas evaluadas son Walk y Reveal. Shine se utiliza para el
+              acabado visual: la niebla, los ecos y el Umbral son celdas que
+              reciben una función de dibujo y el estado por
+              <code class="mono">options</code>.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card">
+                <div class="code-card__bar">js/mechanics/Reveal.js · display function</div>
+                <pre><code class="js">function veilDisplay(options) {
+  const alpha = options.alpha[options.row][options.col];
+  const half = options.cellLength / 2;
+
+  noStroke();
+  fill(6, 9, 18, alpha);
+  rect(-half, -half, options.cellLength, options.cellLength);
+}
+
+// options.origin = 'center' se pasa dentro de options,
+// no como parámetro de drawQuadrille.</code></pre>
+              </div>
+
+              <div class="stack">
+                <p class="small">
+                  La celda no almacena estado: lee los valores de
+                  <code class="mono">options</code>. El tiempo y el estado visual
+                  se reciben como parámetros, y una misma función se reutiliza en
+                  las 221 celdas de la niebla. El contrato permite componer
+                  efectos, como se describe en el capítulo Shine.
+                </p>
+                <div class="card card--violet">
+                  <h3>Alcance</h3>
+                  <p>
+                    Shine no modifica las reglas ni el estado del juego. Solo
+                    presenta la información que Reveal ya calculó, por lo que no
+                    se contabiliza como una tercera mecánica.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Datos en las celdas, parámetros en options</strong></span>
+            <span>Shine · capítulo del libro</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 08 · Decisiones de diseño -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Decisiones de diseño</p>
+            <h2>Criterios adoptados durante el desarrollo.</h2>
+            <p class="lead">
+              Las decisiones siguientes explican el comportamiento actual del
+              juego y las alternativas que se descartaron durante la definición
+              del alcance.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="grid-2">
+              <div class="card card--amber">
+                <h4>Punto de inicio</h4>
+                <p>
+                  Comenzar en la esquina dejaba media área de luz fuera del
+                  tablero. <code class="mono">_pickSpawn()</code> elige la celda
+                  de piso más cercana al centro para que el primer radio sea
+                  visible por completo.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h4>Niebla con memoria</h4>
+                <p>
+                  Los tres estados permiten planificar el regreso y hacen que el
+                  mapa se construya durante la exploración, no que sea un dato
+                  inicial.
+                </p>
+              </div>
+              <div class="card card--violet">
+                <h4>Semilla reproducible</h4>
+                <p>
+                  El HUD muestra la semilla y el parámetro
+                  <code class="mono">?seed=N</code> permite repetir un laberinto
+                  durante la sustentación.
+                </p>
+              </div>
+              <div class="card">
+                <h4>Sin recursos externos</h4>
+                <p>
+                  El juego utiliza formas, colores y glifos. Las librerías están
+                  incluidas en <code class="mono">lib/</code>, por lo que
+                  funciona sin conexión.
+                </p>
+              </div>
+            </div>
+
+            <div class="card card--violet">
+              <h4>Alternativas descartadas</h4>
+              <p>
+                Se descartaron las minas y la condición de derrota porque
+                desplazaban el foco hacia el buscaminas; el movimiento con
+                flechas porque no ejercitaba <code class="mono">path()</code>; y
+                el temporizador porque añadía una tercera mecánica de recursos
+                fuera del alcance de la entrega.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- 09 · Resultados -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Resultados</p>
+            <h2>Resultados de la implementación y de la verificación.</h2>
+            <p class="lead">
+              El juego implementa las dos mecánicas propuestas y cumple las
+              condiciones de victoria definidas. La verificación se realizó en
+              escritorio y en una ventana de 420 píxeles, tanto desde un servidor
+              local como mediante <code class="mono">file://</code>.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="stat-grid">
+              <div class="stat">
+                <strong>2</strong>
+                <span>mecánicas integradas: Walk y Reveal</span>
+              </div>
+              <div class="stat">
+                <strong>3</strong>
+                <span>ecos y una salida condicionada</span>
+              </div>
+              <div class="stat">
+                <strong>14</strong>
+                <span>casos funcionales verificados</span>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card card--amber">
+                <h3>Resultados funcionales</h3>
+                <p>
+                  El jugador puede desplazarse por las celdas exploradas,
+                  replanificar una ruta, revelar la niebla, recoger los ecos y
+                  cruzar el Umbral una vez abierto. El reinicio genera un
+                  laberinto nuevo con otra semilla, y la semilla puede fijarse
+                  mediante el parámetro <code class="mono">?seed=N</code>.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h3>Resultados de la verificación</h3>
+                <p>
+                  Se comprobaron catorce casos funcionales: clics en muros,
+                  celdas no exploradas y celdas aisladas; replanificación;
+                  recogida de ecos; Umbral sellado y abierto; victoria; reinicio;
+                  panel lateral; y adaptación a 420 píxeles. No se registraron
+                  errores en la consola.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Limitaciones identificadas</h3>
+              <p>
+                La luz utiliza un radio euclidiano y atraviesa paredes. Tampoco
+                se incorporaron audio ni pruebas unitarias automatizadas. Estas
+                limitaciones se retoman en el trabajo futuro.
+              </p>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Semilla de referencia</strong> · #4176</span>
+            <span>Verificación en Chrome 152</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 10 · Trabajo futuro -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Trabajo futuro</p>
+            <h2>Líneas de mejora previstas.</h2>
+            <p class="lead">
+              El alcance del Proyecto 1 deja varias extensiones identificadas.
+              Las siguientes se ordenan según su relación con las mecánicas y con
+              el siguiente proyecto del curso.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="grid-3">
+              <div class="card card--cyan">
+                <h4>Línea de visión</h4>
+                <p>
+                  Sustituir el radio euclidiano por <em>shadowcasting</em> para
+                  que la luz no atraviese paredes y la información recordada
+                  adquiera mayor importancia.
+                </p>
+              </div>
+              <div class="card card--violet">
+                <h4>Shine como mecánica</h4>
+                <p>
+                  Convertir la presentación en una mecánica completa, con efectos
+                  por celda para agua, fuego, ecos y portales, compuestos mediante
+                  <code class="mono">stack</code>.
+                </p>
+              </div>
+              <div class="card card--amber">
+                <h4>Behave y Meet</h4>
+                <p>
+                  En el Proyecto 3, los ecos y el Umbral pueden modelarse como
+                  objetos con estado y comportamiento, y responder a mensajes en
+                  lugar de ramificar por tipo.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <h4>Ampliaciones del juego</h4>
+                <p>
+                  Niveles autorales, aceite de linterna, audio, minimapa y un modo
+                  de alto contraste.
+                </p>
+              </div>
+              <div class="card">
+                <h4>Ingeniería</h4>
+                <p>
+                  Pruebas unitarias de Dungeon, Cell y Reveal; despliegue en
+                  GitHub Pages o GitLab Pages.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ecos en la Niebla</strong> · Proyecto 1</span>
+            <span>Monitoría: Oscar Gutiérrez · 2026</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 11 · Conclusiones -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Conclusiones</p>
+            <h2>Conclusiones y fuentes consultadas.</h2>
+            <p class="lead">
+              Las dos mecánicas se integran mediante la máscara
+              <code class="mono">known</code>: Walk produce nueva información y
+              Reveal habilita nuevas rutas. La separación en clases permitió
+              modificar la niebla, la interfaz y los objetos sin alterar el
+              comportamiento general del juego.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="grid-2">
+              <div class="card card--amber">
+                <h3>Conclusiones técnicas</h3>
+                <p>
+                  La planificación sobre <code class="mono">known</code> convierte
+                  la niebla en una restricción real y no en un efecto visual. La
+                  memoria de las celdas exploradas permite planificar el regreso,
+                  y la separación entre posición lógica y posición de dibujo
+                  mantiene estable la animación.
+                </p>
+                <p>
+                  El contrato de presentación de Shine facilitó la reutilización
+                  de las funciones de dibujo en la niebla, los ecos y el Umbral
+                  sin trasladar estado a las celdas.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h3>Conclusiones del proceso</h3>
+                <p>
+                  El proyecto permitió aplicar encapsulamiento, composición y
+                  responsabilidades únicas en un caso concreto. La verificación
+                  funcional y la revisión del código mostraron que las decisiones
+                  de nombres, configuración y límites entre clases reducen el
+                  costo de los cambios.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Artículos y fuentes externas consultadas</h3>
+              <p class="small">
+                Charalambos, J. P. (2024). <em>p5.quadrille.js: P5.js quadrille
+                library</em>. SoftwareX, 27, 101838.
+                https://doi.org/10.1016/j.softx.2024.101838; y
+                <em>Grid-Based Game Programming</em>, capítulos Walk, Reveal y
+                Shine.
+              </p>
+              <p class="small">
+                Martin, R. C. (2008). <em>Clean Code</em>. Prentice Hall; Fowler,
+                M. (2018). <em>Refactoring</em> (2.ª ed.). Addison-Wesley; Sicart,
+                M. (2008). Defining game mechanics. <em>Game Studies, 8</em>(2).
+              </p>
+            </div>
+
+            <p class="small">
+              Informe completo: <a href="../INFORME.md">INFORME.md</a> ·
+              Demostración: <a href="../index.html">index.html</a>.
+            </p>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ecos en la Niebla</strong> · Proyecto 1</span>
+            <span>Monitoría: Oscar Gutiérrez · 2026</span>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <nav class="nav" aria-label="Controles de la presentación">
+      <button class="nav__prev" type="button" aria-label="Diapositiva anterior">←</button>
+      <span class="nav__count">01 / 11</span>
+      <button class="nav__next" type="button" aria-label="Diapositiva siguiente">→</button>
+      <button class="nav__full" type="button" aria-label="Pantalla completa">⛶</button>
+    </nav>
+
+    <script src="deck/deck.js"></script>
+  </body>
+</html>

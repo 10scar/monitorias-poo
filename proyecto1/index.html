@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070b14" />
+    <meta
+      name="description"
+      content="Ecos en la Niebla: laberinto con las mecánicas Walk y Reveal, construido con p5.js y p5.quadrille.js."
+    />
+    <title>Ecos en la Niebla · Proyecto 1</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Cpath d='M32 10 42 32 32 54 22 32Z' fill='%23ffcf7a'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23fff3d1'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="css/estilos.css" />
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">✦</span>
+          <div>
+            <p class="eyebrow">Proyecto 1 · Walk + Reveal</p>
+            <h1>Ecos en la Niebla</h1>
+            <p class="brand__tagline">
+              Un laberinto que solo existe donde tu linterna lo toca.
+            </p>
+          </div>
+        </div>
+
+        <div class="seed" aria-label="Semilla del laberinto">
+          <span>Semilla</span>
+          <strong id="seed">—</strong>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="stage" aria-label="Tablero del juego">
+          <div class="stage__frame">
+            <div id="canvas-host"></div>
+            <div class="stage__vignette" aria-hidden="true"></div>
+          </div>
+          <p class="stage__hint">
+            <span class="key">Clic</span> caminar
+            <span class="dot" aria-hidden="true">·</span>
+            <span class="key">R</span> nuevo laberinto
+          </p>
+        </section>
+
+        <aside class="panel" aria-label="Información del juego">
+          <section class="card card--objective">
+            <p class="eyebrow">Objetivo</p>
+            <p>
+              Recoge los <strong>tres ecos</strong> y cruza el
+              <strong>Umbral</strong>. La puerta no cede hasta que estén todos.
+            </p>
+          </section>
+
+          <section class="card">
+            <div class="card__head">
+              <p class="eyebrow">Ecos</p>
+              <p class="card__meta" id="relics-label">0 / 3 ecos</p>
+            </div>
+            <div
+              class="relics"
+              id="relics"
+              role="img"
+              aria-label="0 de 3 ecos recuperados"
+            ></div>
+          </section>
+
+          <section class="card">
+            <div class="stats">
+              <div>
+                <span class="stat__label">Pasos</span>
+                <strong id="steps">0</strong>
+              </div>
+              <div>
+                <span class="stat__label">Estado</span>
+                <strong id="state">Explorando</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <p class="eyebrow">Leyenda</p>
+            <ul class="legend">
+              <li><span class="swatch swatch--light"></span>Luz de la linterna</li>
+              <li><span class="swatch swatch--memory"></span>Memoria (ya explorado)</li>
+              <li><span class="swatch swatch--unknown"></span>Niebla (aún no existe)</li>
+            </ul>
+          </section>
+
+          <button class="ghost-button" id="new-maze" type="button">
+            Nuevo laberinto
+          </button>
+
+          <p class="message" id="message" aria-live="polite">
+            Tu linterna solo alcanza lo que ya has visto.
+          </p>
+        </aside>
+      </main>
+
+      <footer class="footer">
+        <p>Programación Orientada a Objetos · Monitoría: Oscar Gutiérrez</p>
+        <p class="footer__tech">p5.js 2.3.4 · p5.quadrille 3.5.0</p>
+      </footer>
+    </div>
+
+    <div class="overlay" id="win-overlay" hidden>
+      <div
+        class="overlay__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="win-title"
+      >
+        <p class="eyebrow">Umbral cruzado</p>
+        <h2 id="win-title">La niebla te recuerda</h2>
+        <p>
+          Recogiste los tres ecos y encontraste la salida en
+          <strong id="win-steps">0</strong> pasos.
+        </p>
+        <p class="overlay__seed">Semilla <span id="win-seed">#0000</span></p>
+        <button id="restart" type="button">
+          Otro laberinto <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Librerías vendorizadas: el proyecto funciona sin conexión. -->
+    <script src="lib/p5.min.js"></script>
+    <script src="lib/p5.quadrille.min.js"></script>
+
+    <!-- Código del juego, en orden de dependencias. -->
+    <script src="js/config.js"></script>
+    <script src="js/core/Cell.js"></script>
+    <script src="js/world/Dungeon.js"></script>
+    <script src="js/world/Relic.js"></script>
+    <script src="js/world/Portal.js"></script>
+    <script src="js/entities/Explorer.js"></script>
+    <script src="js/mechanics/Walk.js"></script>
+    <script src="js/mechanics/Reveal.js"></script>
+    <script src="js/ui/Hud.js"></script>
+    <script src="js/game/Game.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

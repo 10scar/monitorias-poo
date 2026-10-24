@@ -1,0 +1,1279 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Código limpio en p5.js y Quadrille</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Cpath d='M32 10 42 32 32 54 22 32Z' fill='%23ffcf7a'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23fff3d1'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="deck/deck.css" />
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+    <main class="deck" aria-label="Presentación de código limpio">
+      <!-- 01 · Portada -->
+      <section class="slide is-active">
+        <div class="slide__inner">
+          <div class="split" style="flex: 1; align-items: center">
+            <div>
+              <p class="kicker kicker--amber">Charla · Programación Orientada a Objetos</p>
+              <h1 aria-label="Código limpio en p5.js y Quadrille">Código limpio en<br /><span class="grad">p5.js y Quadrille</span>.</h1>
+              <p class="lead">
+                Nueve ejemplos de refactorización aplicados a un juego de
+                cuadrícula. Cada caso presenta una versión problemática, una
+                pregunta y una solución.
+              </p>
+              <div class="chips">
+                <span class="chip chip--amber">9 pares antes / después</span>
+                <span class="chip chip--cyan">p5.js</span>
+                <span class="chip chip--violet">p5.quadrille</span>
+              </div>
+              <p class="cover__meta">Monitoría: Oscar Gutiérrez · 2026</p>
+            </div>
+
+            <div class="stack">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · problema</div>
+                <pre><code class="js">if (b.search(s, true).length &gt; 0) {
+  m = 'ok';
+}</code></pre>
+              </div>
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · solución</div>
+                <pre><code class="js">if (puzzle.isSolved()) {
+  hud.setMessage('Resuelto');
+}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 · Planteamiento -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Planteamiento</p>
+            <h2>La legibilidad como criterio de diseño.</h2>
+            <p class="lead">
+              El código de un juego se lee durante la revisión, la sustentación y
+              las modificaciones posteriores. Un proyecto con Quadrille acumula
+              reglas, capas y estados; si esos elementos no tienen nombres y
+              límites claros, cada cambio exige reconstruir el contexto.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="grid-3">
+              <div class="card card--amber">
+                <h4>Verificación limitada</h4>
+                <p>
+                  JavaScript no impide intercambiar dos coordenadas ni explica el
+                  significado de un argumento booleano. La claridad debe
+                  incorporarse en el diseño.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h4>Crecimiento del proyecto</h4>
+                <p>
+                  Cada mecánica nueva interactúa con las anteriores. Una función
+                  con varias responsabilidades concentra los defectos y dificulta
+                  las pruebas.
+                </p>
+              </div>
+              <div class="card card--violet">
+                <h4>Explicación oral</h4>
+                <p>
+                  Durante la sustentación, el código debe poder describirse en
+                  pocos minutos. Esa capacidad depende de la organización y no de
+                  la memoria del autor.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <p>
+                La legibilidad no es una propiedad opcional: determina si el
+                código puede revisarse, probarse y modificarse sin depender del
+                autor original.
+              </p>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Fuentes</strong> · Clean Code (Martin) y Refactoring (Fowler)</span>
+            <span>La legibilidad se evalúa durante todo el proyecto</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 03 · Estructura -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Estructura</p>
+            <h2>Nueve ejemplos de refactorización.</h2>
+            <p class="lead">
+              Cada ejemplo ocupa dos diapositivas. La primera muestra una versión
+              problemática y plantea una pregunta; la segunda presenta la versión
+              refactorizada y explica el principio aplicado. Los casos provienen
+              de situaciones habituales en un proyecto con p5.js y Quadrille.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <p>
+              Los temas son: nombres sin significado, constantes sin nombre,
+              funciones con demasiadas responsabilidades, anidación excesiva de
+              condiciones y argumentos booleanos sin contexto.
+            </p>
+            <p>
+              También se revisan la duplicación de funciones de dibujo, las
+              coordenadas como valores primitivos, el estado global sin propietario
+              y el acceso directo a la estructura interna de otros objetos.
+            </p>
+
+            <div class="grid-2">
+              <div class="card card--amber">
+                <h4>Versión problemática</h4>
+                <p>
+                  No se trata de ejemplos artificiales: corresponden a decisiones
+                  que aparecen en una primera implementación y que pueden
+                  corregirse sin cambiar el comportamiento del juego.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h4>Versión refactorizada</h4>
+                <p>
+                  Cada solución se inspira en una decisión real del proyecto.
+                  Mantiene el comportamiento y mejora la organización de las
+                  responsabilidades.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Nueve pares de diapositivas</strong></span>
+            <span>Problema, pregunta, solución y principio</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 04 · Ejemplo 1 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 01 / 09 · Problema</p>
+            <h2>Nombres sin significado.</h2>
+            <p class="lead">
+              Los identificadores q, r, c, p y n no describen el papel de cada
+              valor dentro del juego.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · tablero.js</div>
+                <pre><code class="js">let q, r, c, p, n;
+
+function setup() {
+  q = createQuadrille(17, 13).maze(color('#22375b'));
+  n = 3;
+}
+
+function mousePressed() {
+  r = q.mouseRow;
+  c = q.mouseCol;
+  if (q.isValid(r, c)) p = { r, c };
+}</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Qué información falta en estos nombres?</h3>
+                <p class="small">
+                  Conviene considerar qué representa cada variable, si el nombre
+                  se puede buscar en el proyecto y si otra persona podría
+                  modificarlo sin consultar al autor.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 01 / 09</strong> · nombres</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 05 · Ejemplo 1 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 01 / 09 · Solución</p>
+            <h2>Nombres que expresan la intención.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Dungeon.js</div>
+                <pre><code class="js">let dungeon;
+const RELIC_COUNT = 3;
+let selectedCell = null;
+
+function setup() {
+  dungeon = new Dungeon({
+    cols: COLS,
+    rows: ROWS,
+    cellLength: CELL,
+  }).generate(SEED);
+}
+
+function mousePressed() {
+  const cell = dungeon.cellAtPixel(mouseX, mouseY);
+  if (cell) {
+    selectedCell = cell;
+  }
+}</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  <code class="mono">dungeon</code> identifica el tablero concreto;
+                  <code class="mono">RELIC_COUNT</code> convierte el valor 3 en una
+                  regla del juego, y <code class="mono">selectedCell</code>
+                  describe la intención de la variable. Los nombres se pueden
+                  pronunciar, buscar y relacionar con el dominio del problema.
+                </p>
+                <p class="source">Clean Code · capítulo 2 · nombres con significado</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 · Ejemplo 2 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 02 / 09 · Problema</p>
+            <h2>Constantes sin nombre.</h2>
+            <p class="lead">
+              El tamaño de celda, el radio de la luz y los colores aparecen
+              repetidos como valores literales en el código.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · draw.js</div>
+                <pre><code class="js">function draw() {
+  background('#070b14');
+  drawingContext.globalAlpha = 0.66;
+
+  const radius = 3.4 * 36;
+  const trail = color(255, 206, 122, 26);
+
+  if (game.steps &gt; 67) {
+    text('récord', 8, 8);
+  }
+
+  drawQuadrille(board, { cellLength: 36 });
+}</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Cuántos lugares habría que modificar si el tablero cambiara de 36 a 40 píxeles?</h3>
+                <p class="small">
+                  También conviene preguntar si el valor 67 corresponde a una
+                  regla del juego o a un residuo de una versión anterior.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 02 / 09</strong> · constantes</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 07 · Ejemplo 2 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 02 / 09 · Solución</p>
+            <h2>Una única fuente de configuración.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · config.js</div>
+                <pre><code class="js">const CONFIG = {
+  cellLength: 36,
+  reveal: { radius: 3.4, memoryAlpha: 0.66 },
+  colors: {
+    background: '#070b14',
+    trail: [255, 206, 122, 26],
+  },
+};
+
+function draw() {
+  background(CONFIG.colors.background);
+  drawingContext.globalAlpha = CONFIG.reveal.memoryAlpha;
+
+  const radius = CONFIG.reveal.radius * CONFIG.cellLength;
+  const trail = color(...CONFIG.colors.trail);
+  drawQuadrille(board, { cellLength: CONFIG.cellLength });
+}</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  Los valores se agrupan en <code class="mono">CONFIG</code> y cada
+                  uno recibe un nombre. Cambiar el tamaño del tablero, el radio de
+                  la luz o la paleta exige modificar un solo archivo. El valor 67
+                  se eliminó porque no representaba una regla del juego.
+                </p>
+                <p class="source">Clean Code · capítulos 2 y 3 · constantes con nombre</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 · Ejemplo 3 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 03 / 09 · Problema</p>
+            <h2>Una función con demasiadas responsabilidades.</h2>
+            <p class="lead">
+              <code class="mono">mousePressed</code> valida la celda, calcula la
+              ruta, mueve al jugador, actualiza la niebla, recoge ecos y abre el
+              portal.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · mousePressed.js</div>
+                <pre><code class="js">function mousePressed() {
+  const row = board.mouseRow;
+  const col = board.mouseCol;
+  if (!board.isValid(row, col)) return;
+  if (board.isFilled(row, col)) { message = 'muro'; return; }
+  if (!explored[row][col]) { message = 'niebla'; return; }
+
+  const steps = board.path(player.row, player.col, row, col);
+  if (steps.length === 0) { message = 'sin ruta'; return; }
+
+  for (const step of steps) {
+    player.row = step.row;
+    player.col = step.col;
+    explored[step.row][step.col] = true;
+    fog.fill(step.row, step.col, color(6, 9, 18, 0));
+    if (relic.row === step.row &amp;&amp; relic.col === step.col) {
+      relic.collected = true;
+      score += 1;
+    }
+  }
+  if (score === 3) portal.open = true;
+}</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Cuántas razones tiene esta función para cambiar?</h3>
+                <p class="small">
+                  Si se modifica el sistema de puntuación, la representación de la
+                  niebla o la condición de victoria, la misma función debe volver
+                  a revisarse.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 03 / 09</strong> · responsabilidad única</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 09 · Ejemplo 3 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 03 / 09 · Solución</p>
+            <h2>Separación entre entrada y lógica.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Game.js</div>
+                <pre><code class="js">function mousePressed() {
+  const cell = dungeon.cellAtPixel(mouseX, mouseY);
+  if (!isWalkable(cell)) return;
+  walk.planTo(cell);
+}
+
+function isWalkable(cell) {
+  return dungeon.isFloor(cell)
+    &amp;&amp; reveal.isExplored(cell);
+}
+
+// Walk mueve y avisa; Game revela, cuenta y decide.
+// La victoria no vive en el handler del mouse.</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  El controlador de entrada interpreta el clic y delega la
+                  validación en <code class="mono">isWalkable</code>. Walk se
+                  encarga del movimiento, mientras que Game actualiza la niebla,
+                  los ecos y la victoria. La función resultante se puede leer en
+                  tres líneas y cada responsabilidad queda en su clase.
+                </p>
+                <p class="source">Clean Code · capítulo 3 · funciones pequeñas y SRP</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 · Ejemplo 4 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 04 / 09 · Problema</p>
+            <h2>Anidación excesiva de condiciones.</h2>
+            <p class="lead">
+              <code class="mono">planTo</code> acumula cinco condiciones antes de
+              llegar al caso en el que la ruta es válida.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · Walk.js</div>
+                <pre><code class="js">function planTo(target) {
+  if (target) {
+    if (!target.equals(this.explorer.cell)) {
+      if (this.dungeon.isFloor(target)) {
+        if (this.reveal.isExplored(target)) {
+          const steps = this.dungeon.path(
+            this.explorer.cell, target
+          );
+          if (steps.length &gt; 0) {
+            this.plan = steps;
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+}</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Dónde se encuentra el caso normal y cuáles son las excepciones?</h3>
+                <p class="small">
+                  La estructura obliga al lector a recorrer toda la jerarquía para
+                  comprender una operación que debería ser directa.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 04 / 09</strong> · anidación</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 11 · Ejemplo 4 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 04 / 09 · Solución</p>
+            <h2>Cláusulas de guarda.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Walk.js</div>
+                <pre><code class="js">function planTo(target) {
+  if (!target) return false;
+  if (target.equals(this.explorer.cell)) return false;
+  if (!this.dungeon.isFloor(target)) return false;
+  if (!this.reveal.isExplored(target)) return false;
+
+  const steps = this.dungeon.path(
+    this.explorer.cell, target
+  );
+  if (steps.length === 0) return false;
+
+  this.plan = steps;
+  return true;
+}</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  Cada condición previa se resuelve con un retorno temprano. El
+                  camino exitoso queda al final y las reglas se leen en orden. La
+                  función conserva el mismo comportamiento y reduce la
+                  profundidad de anidación.
+                </p>
+                <p class="source">Clean Code · capítulo 3 · Refactoring (Fowler)</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12 · Ejemplo 5 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 05 / 09 · Problema</p>
+            <h2>Argumentos booleanos sin contexto.</h2>
+            <p class="lead">
+              El segundo argumento de <code class="mono">search()</code> modifica
+              el criterio de comparación, pero el llamado no explica cuál es ese
+              criterio.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · win-check.js</div>
+                <pre><code class="js">const solved = board.search(solution, true).length &gt; 0;
+
+if (solved) {
+  message = 'resuelto';
+}
+
+// Más adelante...
+const strict = board.search(pattern, true);
+const loose = board.search(pattern, false);</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Qué significa <code class="mono">true</code> en este contexto y qué regla evalúa el juego?</h3>
+                <p class="small">
+                  El problema no está en la librería, sino en el punto de uso: la
+                  intención del juego queda oculta detrás de un valor booleano.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 05 / 09</strong> · argumentos booleanos</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 13 · Ejemplo 5 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 05 / 09 · Solución</p>
+            <h2>Encapsular la intención en un método.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Puzzle.js</div>
+                <pre><code class="js">class Puzzle {
+  isSolved() {
+    return this.board.search(this.solution, true)
+      .length &gt; 0;
+  }
+}
+
+if (puzzle.isSolved()) {
+  hud.setMessage('Resuelto');
+}
+
+// El `true` sigue ahí, pero ahora vive
+// dentro de una pregunta con nombre.</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  <code class="mono">isSolved()</code> expresa la regla del juego y
+                  concentra la llamada a <code class="mono">search()</code> en un
+                  solo lugar. Si cambia el criterio de comparación, la modificación
+                  se realiza en el método y no en cada punto de uso.
+                </p>
+                <p class="source">Clean Code · capítulo 3 · argumentos de bandera</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14 · Ejemplo 6 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 06 / 09 · Problema</p>
+            <h2>Duplicación de funciones de dibujo.</h2>
+            <p class="lead">
+              Los efectos del eco y del portal repiten el halo, el rombo y el
+              recorrido de las capas con parámetros distintos.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · efectos.js</div>
+                <pre><code class="js">const relic = function (o) {
+  noStroke();
+  for (let i = 3; i &gt;= 1; i--) {
+    fill(116, 230, 255, 10 + 6 * i);
+    circle(0, 0, 10 + i * 8);
+  }
+  fill(190, 250, 255);
+  quad(0, -8, 8, 0, 0, 8, -8, 0);
+};
+
+const portal = function (o) {
+  noStroke();
+  for (let i = 3; i &gt;= 1; i--) {
+    fill(255, 196, 96, 8 + 3 * i);
+    circle(0, 0, 12 + i * 10);
+  }
+  fill(255, 196, 96);
+  quad(0, -10, 10, 0, 0, 10, -10, 0);
+};</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Qué parte del código se repite y qué parte cambia entre ambos efectos?</h3>
+                <p class="small">
+                  La duplicación obliga a corregir dos veces el mismo defecto y
+                  dificulta añadir un tercer efecto.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 06 / 09</strong> · duplicación</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 15 · Ejemplo 6 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 06 / 09 · Solución</p>
+            <h2>Composición de efectos.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good code-card--dense">
+                <div class="code-card__bar">después · efectos.js</div>
+                <pre><code class="js">const halo = (rgb) =&gt; function (o) {
+  noStroke();
+  for (let i = 3; i &gt;= 1; i--) {
+    fill(rgb[0], rgb[1], rgb[2], 8 + 4 * i);
+    circle(0, 0, o.cellLength * (0.3 + i * 0.2));
+  }
+};
+
+const diamond = (rgb) =&gt; function (o) {
+  noStroke();
+  fill(rgb[0], rgb[1], rgb[2]);
+  const r = o.cellLength * 0.2;
+  quad(0, -r, r, 0, 0, r, -r, 0);
+};
+
+const stack = (...fx) =&gt; function (o) {
+  fx.forEach((f) =&gt; f.call(this, o));
+};
+
+const relic = stack(
+  halo([116, 230, 255]),
+  diamond([190, 250, 255])
+);
+const portal = stack(
+  halo([255, 196, 96]),
+  diamond([255, 196, 96])
+);</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  <code class="mono">halo</code> y
+                  <code class="mono">diamond</code> reciben el color como
+                  parámetro y devuelven una función de dibujo.
+                  <code class="mono">stack</code> combina esas funciones y produce
+                  el efecto completo. La variación queda en los argumentos y la
+                  lógica de dibujo se escribe una sola vez.
+                </p>
+                <p class="source">Capítulo Shine · DRY y funciones de orden superior</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16 · Ejemplo 7 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 07 / 09 · Problema</p>
+            <h2>Coordenadas como valores primitivos.</h2>
+            <p class="lead">
+              La función <code class="mono">path</code> recibe cuatro números en un
+              orden que el lenguaje no puede verificar.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · path.js</div>
+                <pre><code class="js">function path(row1, col1, row2, col2) {
+  // ...
+}
+
+const steps = path(
+  playerRow, playerCol,
+  targetRow, targetCol
+);
+
+// En otro lugar, sin querer:
+const wrong = path(
+  targetCol, targetRow,
+  playerCol, playerRow
+);</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Qué impide intercambiar <code class="mono">row</code> y <code class="mono">col</code> al llamar a la función?</h3>
+                <p class="small">
+                  Nada en JavaScript detecta el error. La ruta resultante puede ser
+                  incorrecta sin producir una excepción, y el defecto aparece lejos
+                  del punto de origen.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 07 / 09</strong> · valores primitivos</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 17 · Ejemplo 7 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 07 / 09 · Solución</p>
+            <h2>Un objeto de valor para las celdas.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Cell.js + Dungeon.js</div>
+                <pre><code class="js">class Cell {
+  constructor(row, col) {
+    this.row = row;
+    this.col = col;
+  }
+
+  equals(other) {
+    return this.row === other.row
+      &amp;&amp; this.col === other.col;
+  }
+}
+
+path(from, to) {
+  return this.known
+    .path(from.row, from.col, to.row, to.col)
+    .map(({ row, col }) =&gt; new Cell(row, col));
+}</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  <code class="mono">Cell</code> agrupa fila y columna, y
+                  <code class="mono">path</code> recibe
+                  <code class="mono">from</code> y <code class="mono">to</code>. La
+                  comparación y la generación de claves quedan centralizadas, y el
+                  llamado ya no depende de recordar el orden de cuatro números.
+                </p>
+                <p class="source">Clean Code · capítulo 3 · Refactoring · obsesión por las primitivas</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 18 · Ejemplo 8 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 08 / 09 · Problema</p>
+            <h2>Estado global sin propietario.</h2>
+            <p class="lead">
+              Siete variables globales representan el estado completo de la partida
+              y cualquier función puede modificarlas.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · sketch.js</div>
+                <pre><code class="js">let board, player, fog, relic;
+let score, picked, won;
+
+function setup() {
+  // crea todo aquí
+}
+
+function draw() {
+  // usa todo aquí
+}
+
+function mousePressed() {
+  // cambia todo aquí
+}
+
+// ¿Quién puede tocar `won`? Cualquiera.</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿Qué parte del programa puede cambiar <code class="mono">won</code> y cómo se puede probar la victoria de forma aislada?</h3>
+                <p class="small">
+                  La ausencia de un propietario dificulta rastrear los cambios y
+                  hace que las pruebas dependan del estado global.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 08 / 09</strong> · estado global</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 19 · Ejemplo 8 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 08 / 09 · Solución</p>
+            <h2>Encapsulación del estado en una clase.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Game.js + main.js</div>
+                <pre><code class="js">class Game {
+  constructor(hud) {
+    this.hud = hud;
+    this.state = 'playing';
+    this.startRun();
+  }
+
+  handleClick(x, y) { /* ... */ }
+  update(dt) { /* ... */ }
+}
+
+let game; // el único global que p5 necesita
+
+function setup() {
+  game = new Game(new Hud());
+}</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  <code class="mono">Game</code> concentra el estado y las
+                  transiciones entre <code class="mono">playing</code> y
+                  <code class="mono">won</code>. Las dependencias se reciben por
+                  el constructor y el único global es el punto de entrada que exige
+                  p5.js. La lógica queda separada de la interfaz y puede probarse
+                  con mayor facilidad.
+                </p>
+                <p class="source">Clean Code · capítulos 6 y 7 · encapsulamiento</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 20 · Ejemplo 9 problema -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--amber">Ejemplo 09 / 09 · Problema</p>
+            <h2>Acceso directo a la estructura interna.</h2>
+            <p class="lead">
+              El código recorre <code class="mono">game.dungeon.walls</code> y
+              <code class="mono">game.reveal.explored</code> para decidir si una
+              celda es transitable.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad">
+                <div class="code-card__bar">antes · interacción.js</div>
+                <pre><code class="js">// valida la celda y mueve al jugador
+if (!game.dungeon.walls.isValid(row, col)) return;
+if (!game.dungeon.walls.isEmpty(row, col)) return;
+if (!game.reveal.explored[row][col]) return;
+
+game.explorer.cell.row = row;
+game.explorer.cell.col = col;
+
+// El comentario dice lo que el código ya dice.
+// La cadena de puntos dice cómo está hecho el otro.</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Pregunta</p>
+                <h3>¿A qué objeto debería preguntársele esa condición?</h3>
+                <p class="small">
+                  El comentario describe lo que el código ya hace, mientras que la
+                  cadena de accesos obliga al llamador a conocer la representación
+                  interna de la niebla.
+                </p>
+              </aside>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Ejemplo 09 / 09</strong> · encapsulamiento</span>
+            <span>La solución se presenta en la diapositiva siguiente</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 21 · Ejemplo 9 solución -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker kicker--green">Ejemplo 09 / 09 · Solución</p>
+            <h2>Delegación y comentarios explicativos.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--good">
+                <div class="code-card__bar">después · Game.js</div>
+                <pre><code class="js">if (!game.isWalkable(cell)) return;
+
+// La niebla se dibuja después de los ecos:
+// así la memoria los atenúa y la luz los enciende.
+reveal.draw();
+
+isWalkable(cell) {
+  return this.dungeon.isFloor(cell)
+    &amp;&amp; this.reveal.isExplored(cell);
+}</code></pre>
+              </div>
+
+              <aside class="explain">
+                <p class="eyebrow">Explicación</p>
+                <h3>Cambios aplicados</h3>
+                <p>
+                  <code class="mono">Game.isWalkable()</code> concentra la regla y
+                  el llamador no necesita conocer la estructura de Reveal. El
+                  comentario se reserva para explicar una decisión de orden de
+                  dibujo que no resulta evidente a partir del código.
+                </p>
+                <p class="source">Clean Code · capítulo 4 · comentarios; Ley de Demeter</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 22 · Lista de verificación -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Entrega</p>
+            <h2>Lista de verificación para la entrega.</h2>
+            <p class="lead">
+              Las preguntas siguientes resumen los criterios aplicados en los
+              nueve ejemplos. No son reglas absolutas, sino condiciones que
+              facilitan la lectura y el mantenimiento del proyecto.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <ul class="checklist">
+              <li>¿Los nombres se pueden leer en voz alta?</li>
+              <li>¿Los números y colores tienen nombre?</li>
+              <li>¿Cada función tiene una sola razón para cambiar?</li>
+              <li>¿Las excepciones se resuelven al principio?</li>
+              <li>¿Los booleanos están encapsulados en una pregunta?</li>
+              <li>¿Hay bloques que se puedan componer?</li>
+              <li>¿Las coordenadas son un objeto y no cuatro números?</li>
+              <li>¿El estado tiene un propietario claro?</li>
+              <li>¿Los comentarios explican el porqué?</li>
+              <li>¿Se le pregunta al objeto o se accede a su estructura interna?</li>
+            </ul>
+
+            <div class="grid-2">
+              <div class="card card--amber">
+                <h4>Indicador de configuración</h4>
+                <p>
+                  El radio de la linterna se puede cambiar en un solo archivo y el
+                  juego continúa funcionando sin buscar valores por todo el
+                  proyecto.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h4>Indicador de mantenibilidad</h4>
+                <p>
+                  Una mecánica se puede explicar sin abrir su archivo: se conocen
+                  sus entradas, sus salidas y la clase que asume la
+                  responsabilidad.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 23 · Problemas adicionales -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Problemas frecuentes</p>
+            <h2>Tres problemas adicionales.</h2>
+          </header>
+
+          <div class="slide__body">
+            <div class="smell-grid">
+              <div class="card card--amber">
+                <h4>Método centrado en otro objeto</h4>
+                <p>
+                  Un método utiliza más datos de otro objeto que los propios. La
+                  regla probablemente pertenece al objeto del que provienen los
+                  datos.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h4>Listas de parámetros extensas</h4>
+                <p>
+                  Una firma con seis argumentos indica que los valores forman una
+                  estructura que debería tener nombre.
+                </p>
+              </div>
+              <div class="card card--violet">
+                <h4>Cambios dispersos</h4>
+                <p>
+                  Si modificar un detalle exige editar varios archivos, la decisión
+                  está distribuida y conviene centralizarla.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <p>
+                Un proyecto mantenible localiza sus decisiones y permite explicar
+                el comportamiento a partir de los nombres y de las
+                responsabilidades de sus clases.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 24 · Ejercicio -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Práctica</p>
+            <h2>Ejercicio de identificación de problemas.</h2>
+            <p class="lead">
+              El fragmento presenta una primera versión de un movimiento y
+              contiene al menos tres problemas de diseño.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="split">
+              <div class="code-card code-card--bad code-card--dense">
+                <div class="code-card__bar">ejercicio · mover.js</div>
+                <pre><code class="js">let b, p, s;
+
+function setup() {
+  b = createQuadrille(8, 8).maze(color('#000'));
+  p = { r: 0, c: 0 };
+}
+
+function mousePressed() {
+  if (b.isValid(b.mouseRow, b.mouseCol)) {
+    if (!b.isFilled(b.mouseRow, b.mouseCol)) {
+      const path = b.path(p.r, p.c, b.mouseRow, b.mouseCol);
+      if (path.length &gt; 0) {
+        for (const step of path) {
+          p.r = step.row;
+          p.c = step.col;
+          s += 1;
+        }
+      }
+    }
+  }
+}</code></pre>
+              </div>
+
+              <aside class="question">
+                <p class="eyebrow">Análisis</p>
+                <h3>Preguntas para el análisis</h3>
+                <p class="small">
+                  Conviene identificar qué representan <code class="mono">b</code>,
+                  <code class="mono">p</code> y <code class="mono">s</code>;
+                  cuántas responsabilidades tiene
+                  <code class="mono">mousePressed</code>; qué ocurre si el tablero
+                  cambia de tamaño; y cómo se probaría el movimiento sin un mouse.
+                </p>
+                <p class="source">
+                  Propuesta: reescribir el fragmento con Cell, Walk y un nombre
+                  explícito para el contador.
+                </p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 25 · Cierre -->
+      <section class="slide">
+        <div class="slide__inner">
+          <header class="slide__head">
+            <p class="kicker">Cierre</p>
+            <h2>Criterios para mantener el código modificable.</h2>
+            <p class="lead">
+              Los nueve ejemplos comparten una misma idea: asignar nombres
+              precisos, ubicar cada regla en su clase y permitir que los
+              componentes se combinen.
+            </p>
+          </header>
+
+          <div class="slide__body">
+            <div class="grid-3">
+              <div class="card card--amber">
+                <h4>Leer</h4>
+                <p>
+                  <em>Clean Code</em>, de Robert C. Martin. Los capítulos 2, 3 y 4
+                  fundamentan la presentación.
+                </p>
+              </div>
+              <div class="card card--cyan">
+                <h4>Refactorizar</h4>
+                <p>
+                  <em>Refactoring</em>, de Martin Fowler. Describe problemas y
+                  transformaciones pequeñas.
+                </p>
+              </div>
+              <div class="card card--violet">
+                <h4>Practicar</h4>
+                <p>
+                  <em>clean-code-javascript</em> y, sobre todo, el código del
+                  propio juego.
+                </p>
+              </div>
+            </div>
+
+            <div class="split">
+              <div class="card">
+                <h3>Resumen</h3>
+                <p>
+                  Un nombre más preciso, una cláusula de guarda y una constante
+                  con nombre mejoran de forma inmediata la lectura del proyecto.
+                </p>
+              </div>
+              <div class="card">
+                <h3>En este proyecto</h3>
+                <p>
+                  <a href="../INFORME.md">INFORME.md</a> ·
+                  <a href="proyecto.html">presentación del juego</a> ·
+                  <a href="../index.html">demostración</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="slide__foot">
+            <span><strong>Código limpio en p5.js y Quadrille</strong> · Monitoría: Oscar Gutiérrez</span>
+            <span>2026</span>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <nav class="nav" aria-label="Controles de la presentación">
+      <button class="nav__prev" type="button" aria-label="Diapositiva anterior">←</button>
+      <span class="nav__count">01 / 25</span>
+      <button class="nav__next" type="button" aria-label="Diapositiva siguiente">→</button>
+      <button class="nav__full" type="button" aria-label="Pantalla completa">⛶</button>
+    </nav>
+
+    <script src="deck/deck.js"></script>
+  </body>
+</html>
